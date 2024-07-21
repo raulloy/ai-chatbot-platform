@@ -76,7 +76,6 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       window.addEventListener('message', (e) => {
-        if (e.origin !== 'https://loytech-aichatbot.vercel.app') return;
         const deviceType = e.data.deviceType;
         setDeviceType(deviceType);
       });
@@ -106,7 +105,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
             </Avatar>
             <div className="flex items-start flex-col">
               <h3 className="text-lg font-bold leading-none">
-                Asistente Virtual
+                Asistente Virtual - {deviceType}
               </h3>
               <p className="text-sm">{domainName.split('.com')[0]}</p>
               {realtimeMode?.mode && (
