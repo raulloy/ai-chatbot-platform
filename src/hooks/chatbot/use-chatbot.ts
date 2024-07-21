@@ -85,7 +85,7 @@ export const useChatBot = () => {
 
   useEffect(() => {
     window.addEventListener('message', async (e) => {
-      if (e.origin !== 'http://localhost:3000') return;
+      if (e.origin !== 'https://loytech-aichatbot.vercel.app') return;
       const { customerId } = e.data;
 
       if (customerId) {
