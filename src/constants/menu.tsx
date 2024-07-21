@@ -95,7 +95,7 @@ export const BOT_TABS_MENU: TABS_MENU_PROPS[] = [
     icon: <ChatIcon />,
   },
   {
-    label: 'Preguntas Frecuentes',
+    label: 'FAQ',
     icon: <HelpDeskIcon />,
   },
 ];

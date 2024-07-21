@@ -1,5 +1,5 @@
+import React, { useEffect, useState, forwardRef } from 'react';
 import { ChatBotMessageProps } from '@/schemas/conversation.schema';
-import React, { forwardRef } from 'react';
 import { UseFormRegister } from 'react-hook-form';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import RealTimeMode from './real-time';
@@ -71,8 +71,30 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
     ref
   ) => {
     console.log(errors);
+
+    const [deviceType, setDeviceType] = useState('');
+
+    useEffect(() => {
+      window.addEventListener('message', (e) => {
+        console.log(e.data);
+        const deviceType = e.data.deviceType;
+        setDeviceType(deviceType);
+      });
+    }, []);
+
+    // const containerClass = `flex flex-col bg-white rounded-xl border-[1px] overflow-hidden mr-[40px] ${
+    //   deviceType === 'mobile' ? 'h-[600px] w-[320px]' : 'h-[670px] w-[450px]'
+    // }`;
+
     return (
-      <div className="h-[670px] w-[450px] sm:h-[600px] sm:w-[350px] flex flex-col bg-white rounded-xl mr-[80px] border-[1px] overflow-hidden">
+      // <div className={containerClass}>
+      <div
+        className={`flex flex-col bg-white rounded-xl border-[1px] overflow-hidden mr-[40px] ${
+          deviceType === 'mobile'
+            ? 'h-[600px] w-[320px]'
+            : 'h-[670px] w-[450px]'
+        }`}
+      >
         <div className="flex justify-between px-4 pt-4">
           <div className="flex gap-2">
             <Avatar className="w-20 h-20">
@@ -116,7 +138,9 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
                   background: theme || '',
                   color: textColor || '',
                 }}
-                className="px-3 flex h-[400px] sm:h-[330px] flex-col py-5 gap-3 chat-window overflow-y-auto"
+                className={`px-3 flex sm:h-[330px] flex-col py-5 gap-3 chat-window overflow-y-auto ${
+                  deviceType === 'mobile' ? 'h-[330px]' : 'h-[400px]'
+                }`}
                 ref={ref}
               >
                 {chats.map((chat, key) => (
