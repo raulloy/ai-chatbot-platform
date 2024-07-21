@@ -76,7 +76,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
 
     useEffect(() => {
       window.addEventListener('message', (e) => {
-        console.log(e.data);
+        if (e.origin !== 'https://loytech-aichatbot.vercel.app') return;
         const deviceType = e.data.deviceType;
         setDeviceType(deviceType);
       });
