@@ -105,7 +105,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
             </Avatar>
             <div className="flex items-start flex-col">
               <h3 className="text-lg font-bold leading-none">
-                Asistente Virtual - {deviceType}
+                Asistente Virtual
               </h3>
               <p className="text-sm">{domainName.split('.com')[0]}</p>
               {realtimeMode?.mode && (
@@ -174,7 +174,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
             </div>
           </TabsContent>
 
-          <TabsContent value="Preguntas Frecuentes">
+          <TabsContent value="FAQ">
             <div className="h-[465px] overflow-y-auto overflow-x-hidden p-4 flex flex-col gap-4">
               <div>
                 <CardTitle>Preguntas Frecuentes</CardTitle>
