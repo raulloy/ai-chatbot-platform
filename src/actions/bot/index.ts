@@ -241,7 +241,7 @@ export const onAiChatBotAssistant = async (
 
         // Run the Assistant
         const run = await openai.beta.threads.runs.create(threadId, {
-          assistant_id: assistantId,
+          assistant_id: assistantId || '',
         });
 
         let runStatus;
@@ -250,37 +250,43 @@ export const onAiChatBotAssistant = async (
         } while (runStatus.status !== 'completed');
 
         const messages = await openai.beta.threads.messages.list(threadId);
-        const assistantResponse = messages.data[0].content[0].text.value;
+        if (messages.data[0].content[0].type == 'text') {
+          const assistantResponse = messages.data[0].content[0].text.value;
 
-        console.log(`Assistant response: ${assistantResponse}`);
+          console.log(`Assistant response: ${assistantResponse}`);
 
-        // Store the assistant's response
-        await onStoreConversations(chatRoom.id, assistantResponse, 'assistant');
+          // Store the assistant's response
+          await onStoreConversations(
+            chatRoom.id,
+            assistantResponse,
+            'assistant'
+          );
 
-        const response = {
-          role: 'assistant',
-          content: assistantResponse.replace('(realtime)', ''),
-          customerId,
-        };
-
-        if (assistantResponse.includes('(realtime)')) {
-          await client.chatRoom.update({
-            where: {
-              id: chatRoom.id,
-            },
-            data: {
-              live: true,
-            },
-          });
-
-          return {
-            live: true,
-            chatRoom: chatRoom.id,
-            response,
+          const response = {
+            role: 'assistant',
+            content: assistantResponse.replace('(realtime)', ''),
+            customerId,
           };
-        }
 
-        return { response };
+          if (assistantResponse.includes('(realtime)')) {
+            await client.chatRoom.update({
+              where: {
+                id: chatRoom.id,
+              },
+              data: {
+                live: true,
+              },
+            });
+
+            return {
+              live: true,
+              chatRoom: chatRoom.id,
+              response,
+            };
+          }
+
+          return { response };
+        }
       }
     }
   } catch (error) {
