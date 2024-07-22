@@ -84,7 +84,6 @@ const Bubble = ({ message, createdAt }: Props) => {
           </div>
         ) : (
           <p className="text-sm">
-            {/* {message.content.replace('(complete)', ' ')} */}
             {formattedContent}
             {message.link && (
               <Link
@@ -92,7 +91,7 @@ const Bubble = ({ message, createdAt }: Props) => {
                 href={message.link}
                 target="_blank"
               >
-                Your Link
+                {message.link.replace(')', '')}
               </Link>
             )}
           </p>

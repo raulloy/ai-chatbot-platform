@@ -1,7 +1,10 @@
 'use server';
 
 import { client } from '@/lib/prisma';
+import { extractEmailsFromString, extractURLfromString } from '@/lib/utils';
 import { onRealTimeChat } from '../conversation';
+import { clerkClient } from '@clerk/nextjs';
+import { onMailer } from '../mailer';
 import OpenAi from 'openai';
 
 const openai = new OpenAi({
@@ -140,6 +143,8 @@ export const findChatRoom = async (id: string, customerid: string) => {
   }
 };
 
+let customerEmail: string | undefined;
+
 export const onAiChatBotAssistant = async (
   id: string,
   customerId: string,
@@ -147,8 +152,6 @@ export const onAiChatBotAssistant = async (
   author: 'user',
   message: string
 ) => {
-  // console.log('chat ------------> ', chat);
-
   try {
     const chatBotDomain = await client.domain.findUnique({
       where: {
@@ -167,6 +170,37 @@ export const onAiChatBotAssistant = async (
       },
     });
     if (chatBotDomain) {
+      const extractedEmail = extractEmailsFromString(message);
+      if (extractedEmail) {
+        customerEmail = extractedEmail[0];
+      }
+
+      if (customerEmail) {
+        // add customer email
+        await client.customer.updateMany({
+          where: {
+            id: customerId,
+          },
+          data: {
+            email: customerEmail,
+          },
+        });
+      }
+
+      const checkClerkUser = await client.domain.findUnique({
+        where: {
+          id,
+        },
+        select: {
+          User: {
+            select: {
+              clerkId: true,
+            },
+          },
+          name: true,
+        },
+      });
+
       // Retrieve the chat room to check if it already has a threadId
       const chatRoom = await client.chatRoom.findFirst({
         where: {
@@ -175,6 +209,7 @@ export const onAiChatBotAssistant = async (
         select: {
           id: true,
           live: true,
+          mailed: true,
           threadId: true,
         },
       });
@@ -184,7 +219,31 @@ export const onAiChatBotAssistant = async (
           console.log('Realtime mode active, skipping assistant response.');
           await onStoreConversations(chatRoom.id, message, author);
           await onRealTimeChat(chatRoom.id, message, '', 'user');
-          return { chatRoom: chatRoom.id, live: true };
+
+          // if (!chatRoom.mailed) {
+          //   const user = await clerkClient.users.getUser(
+          //     checkClerkUser?.User?.clerkId!
+          //   );
+
+          //   onMailer(user.emailAddresses[0].emailAddress);
+
+          //   await client.chatRoom.updateMany({
+          //     where: {
+          //       id: chatRoom.id,
+          //     },
+          //     data: {
+          //       mailed: true,
+          //     },
+          //   });
+
+          //   //update mail status to prevent spamming
+          //   const mailed = chatRoom.mailed;
+
+          //   if (mailed) {
+          //     return { live: true, chatRoom: chatRoom.id };
+          //   }
+          // }
+          return { live: true, chatRoom: chatRoom.id };
         }
 
         await onStoreConversations(chatRoom.id, message, author);
@@ -255,6 +314,10 @@ export const onAiChatBotAssistant = async (
 
           console.log(`Assistant response: ${assistantResponse}`);
 
+          // Extract URL if present
+          const urlMatch = extractURLfromString(assistantResponse);
+          const link = urlMatch ? urlMatch[0] : null;
+
           // Store the assistant's response
           await onStoreConversations(
             chatRoom.id,
@@ -265,6 +328,7 @@ export const onAiChatBotAssistant = async (
           const response = {
             role: 'assistant',
             content: assistantResponse.replace('(realtime)', ''),
+            link,
             customerId,
           };
 
@@ -277,6 +341,30 @@ export const onAiChatBotAssistant = async (
                 live: true,
               },
             });
+
+            if (!chatRoom.mailed) {
+              const user = await clerkClient.users.getUser(
+                checkClerkUser?.User?.clerkId!
+              );
+
+              onMailer(user.emailAddresses[0].emailAddress);
+
+              await client.chatRoom.updateMany({
+                where: {
+                  id: chatRoom.id,
+                },
+                data: {
+                  mailed: true,
+                },
+              });
+
+              //update mail status to prevent spamming
+              const mailed = chatRoom.mailed;
+
+              if (mailed) {
+                return { live: true, chatRoom: chatRoom.id };
+              }
+            }
 
             return {
               live: true,
