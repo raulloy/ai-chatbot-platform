@@ -1,20 +1,20 @@
-'use client'
-import { Card, CardContent, CardDescription } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
-import { User } from 'lucide-react'
-import React from 'react'
-import { FieldValues, UseFormRegister } from 'react-hook-form'
+'use client';
+import { Card, CardContent, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
+import { User } from 'lucide-react';
+import React from 'react';
+import { FieldValues, UseFormRegister } from 'react-hook-form';
 
 type Props = {
-  value: string
-  title: string
-  text: string
-  register: UseFormRegister<FieldValues>
-  userType: 'owner' | 'student'
-  setUserType: React.Dispatch<React.SetStateAction<'owner' | 'student'>>
-}
+  value: string;
+  title: string;
+  text: string;
+  register: UseFormRegister<FieldValues>;
+  userType: 'owner' | 'student';
+  setUserType: React.Dispatch<React.SetStateAction<'owner' | 'student'>>;
+};
 
 const UserTypeCard = ({
   register,
@@ -29,7 +29,7 @@ const UserTypeCard = ({
       <Card
         className={cn(
           'w-full cursor-pointer',
-          userType == value && 'border-orange'
+          userType == value && 'border-gray-400'
         )}
       >
         <CardContent className="flex justify-between p-2">
@@ -37,13 +37,13 @@ const UserTypeCard = ({
             <Card
               className={cn(
                 'flex justify-center p-3',
-                userType == value && 'border-orange'
+                userType == value && 'border-gray-400'
               )}
             >
               <User
                 size={30}
                 className={cn(
-                  userType == value ? 'text-orange' : 'text-gray-400'
+                  userType == value ? 'text-gray-400' : 'text-gray-400'
                 )}
               />
             </Card>
@@ -60,7 +60,7 @@ const UserTypeCard = ({
             <div
               className={cn(
                 'w-4 h-4 rounded-full',
-                userType == value ? 'bg-orange' : 'bg-transparent'
+                userType == value ? 'bg-gray-400' : 'bg-transparent'
               )}
             >
               <Input
@@ -77,7 +77,7 @@ const UserTypeCard = ({
         </CardContent>
       </Card>
     </Label>
-  )
-}
+  );
+};
 
-export default UserTypeCard
+export default UserTypeCard;

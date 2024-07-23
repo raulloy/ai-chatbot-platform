@@ -20,7 +20,7 @@ const Layout = async ({ children }: Props) => {
           alt="LOGO"
           sizes="100vw"
           style={{
-            width: '20%',
+            width: '14%',
             height: 'auto',
           }}
           width={0}
@@ -30,19 +30,19 @@ const Layout = async ({ children }: Props) => {
       </div>
       <div className="hidden lg:flex flex-1 w-full max-h-full max-w-4000px overflow-hidden relative bg-cream  flex-col pt-10 pl-24 gap-3">
         <h2 className="text-gravel md:text-4xl font-bold">
-          Hi, I am your AI powered sales assistant, Corinna!
+          AI powered virtual assistant
         </h2>
         <p className="text-iridium md:text-sm mb-10">
-          Corinna is capable of capturing lead information without a form...{' '}
+          Embed AI Assistant into any website with just a snippet of code! 😉{' '}
           <br />
-          something never done before 😉
+          Capturing lead information without a form...
         </p>
         <Image
-          src="/images/app-ui.png"
+          src="/images/ai-robot.png"
           alt="app image"
           loading="lazy"
           sizes="30"
-          className="absolute shrink-0 !w-[1600px] top-48"
+          className="absolute shrink-0 !w-[760px] top-44 right-52"
           width={0}
           height={0}
         />

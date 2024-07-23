@@ -1,7 +1,7 @@
 export const pricingCards = [
   {
     title: 'Standard',
-    description: 'Perfect for trying out Corinna AI',
+    description: 'Perfect for trying out AI Chatbot',
     price: '$0',
     duration: '',
     highlight: 'Key features',
@@ -27,4 +27,4 @@ export const pricingCards = [
     features: [' 2 domain ', '50 contacts', '50 Emails per month'],
     priceId: 'price_1OYxkqFj9oKEERu1NbKUxXxN',
   },
-]
+];
