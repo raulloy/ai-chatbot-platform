@@ -19,8 +19,8 @@ const RealTimeMode = ({ chatRoomId, setChats }: Props) => {
   useRealTime(chatRoomId, setChats);
 
   return (
-    <Card className="px-3 rounded-full py-1 bg-blue-800 font-bold text-white text-sm">
-      Real Time
+    <Card className="px-3 rounded-full py-1 bg-blue-600 font-bold text-white text-sm">
+      Live
     </Card>
   );
 };

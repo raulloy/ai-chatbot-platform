@@ -36,8 +36,14 @@ export const onCompleteUserRegistration = async (
 
 export const onLoginUser = async () => {
   const user = await currentUser();
-  if (!user) redirectToSignIn();
-  else {
+  if (!user) {
+    // Provide an absolute URL for redirection
+    const signInUrl = new URL(
+      '/auth/sign-in',
+      process.env.NEXT_PUBLIC_BASE_URL
+    ).toString();
+    redirectToSignIn({ returnBackUrl: signInUrl });
+  } else {
     try {
       const authenticated = await client.user.findUnique({
         where: {

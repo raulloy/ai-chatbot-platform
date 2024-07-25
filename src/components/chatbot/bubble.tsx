@@ -23,12 +23,67 @@ const Bubble = ({ message, createdAt }: Props) => {
 
   const image = extractUUIDFromString(message.content);
 
-  const formattedContent = message.content.split('\n').map((line, index) => (
-    <span key={index}>
-      {line}
-      <br />
-    </span>
-  ));
+  const formattedContent = message.content.split('\n').map((line, index) => {
+    const linkRegex = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+    const boldRegex = /\*\*([^\*]+)\*\*/g;
+    const parts: (string | JSX.Element)[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = linkRegex.exec(line)) !== null) {
+      if (match.index > lastIndex) {
+        parts.push(line.substring(lastIndex, match.index));
+      }
+      parts.push(
+        <a
+          key={index + match.index}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 underline"
+        >
+          {match[1]}
+        </a>
+      );
+      lastIndex = linkRegex.lastIndex;
+    }
+
+    if (lastIndex < line.length) {
+      parts.push(line.substring(lastIndex));
+    }
+
+    const finalParts: (string | JSX.Element)[] = [];
+    lastIndex = 0;
+
+    parts.forEach((part, partIndex) => {
+      if (typeof part === 'string') {
+        while ((match = boldRegex.exec(part)) !== null) {
+          if (match.index > lastIndex) {
+            finalParts.push(part.substring(lastIndex, match.index));
+          }
+          finalParts.push(
+            <strong key={index + partIndex + match.index}>{match[1]}</strong>
+          );
+          lastIndex = boldRegex.lastIndex;
+        }
+
+        if (lastIndex < part.length) {
+          finalParts.push(part.substring(lastIndex));
+        }
+
+        lastIndex = 0;
+      } else {
+        finalParts.push(part);
+      }
+    });
+
+    return (
+      <span key={index}>
+        {finalParts}
+        <br />
+      </span>
+    );
+  });
 
   return (
     <div
@@ -83,18 +138,7 @@ const Bubble = ({ message, createdAt }: Props) => {
             <Image src={`https://ucarecdn.com/${image[0]}/`} fill alt="image" />
           </div>
         ) : (
-          <p className="text-sm">
-            {formattedContent}
-            {message.link && (
-              <Link
-                className="underline font-bold pl-2"
-                href={message.link}
-                target="_blank"
-              >
-                {message.link.replace(')', '')}
-              </Link>
-            )}
-          </p>
+          <p className="text-sm">{formattedContent}</p>
         )}
       </div>
     </div>

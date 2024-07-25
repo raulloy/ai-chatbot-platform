@@ -29,7 +29,10 @@ const ConversationMenu = ({ domains }: Props) => {
       <TabsMenu triggers={TABS_MENU}>
         <TabsContent value="unread">
           <ConversationSearch domains={domains} register={register} />
-          <div className="flex flex-col">
+          <div
+            className="flex flex-col overflow-y-auto"
+            style={{ height: 'calc(100vh - 8rem)' }}
+          >
             <Loader loading={loading}>
               {chatRooms.length ? (
                 chatRooms.map((room) => (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { useEffect, useRef, useState, forwardRef } from 'react';
 import { ChatBotMessageProps } from '@/schemas/conversation.schema';
 import { UseFormRegister } from 'react-hook-form';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
@@ -73,6 +73,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
     console.log(errors);
 
     const [deviceType, setDeviceType] = useState('');
+    const chatContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
       window.addEventListener('message', (e) => {
@@ -81,12 +82,14 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
       });
     }, []);
 
-    // const containerClass = `flex flex-col bg-white rounded-xl border-[1px] overflow-hidden mr-[40px] ${
-    //   deviceType === 'mobile' ? 'h-[600px] w-[320px]' : 'h-[670px] w-[450px]'
-    // }`;
+    useEffect(() => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop =
+          chatContainerRef.current.scrollHeight;
+      }
+    }, [chats]);
 
     return (
-      // <div className={containerClass}>
       <div
         className={`flex flex-col bg-white rounded-xl border-[1px] overflow-hidden mr-[40px] ${
           deviceType === 'mobile'
@@ -104,10 +107,10 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
               <AvatarFallback>HU</AvatarFallback>
             </Avatar>
             <div className="flex items-start flex-col">
-              <h3 className="text-lg font-bold leading-none">
+              <h3 className="text-lg font-bold leading-none mb-2">
                 Asistente Virtual
               </h3>
-              <p className="text-sm">{domainName.split('.com')[0]}</p>
+              {/* <p className="text-sm">{domainName.split('.com')[0]}</p> */}
               {realtimeMode?.mode && (
                 <RealTimeMode
                   setChats={setChat}
@@ -116,14 +119,6 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
               )}
             </div>
           </div>
-          {/* <div className="relative w-16 h-16">
-            <Image
-              src="https://ucarecdn.com/019dd17d-b69b-4dea-a16b-60e0f25de1e9/propuser.png"
-              fill
-              alt="users"
-              objectFit="contain"
-            />
-          </div> */}
         </div>
         <TabsMenu
           triggers={BOT_TABS_MENU}
@@ -140,7 +135,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
                 className={`px-3 flex sm:h-[330px] flex-col py-5 gap-3 chat-window overflow-y-auto ${
                   deviceType === 'mobile' ? 'h-[330px]' : 'h-[400px]'
                 }`}
-                ref={ref}
+                ref={chatContainerRef}
               >
                 {chats.map((chat, key) => (
                   <Bubble key={key} message={chat} />
