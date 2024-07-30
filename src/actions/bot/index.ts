@@ -1,7 +1,11 @@
 'use server';
 
 import { client } from '@/lib/prisma';
-import { extractEmailsFromString, extractURLfromString } from '@/lib/utils';
+import {
+  createHubSpotContact,
+  extractEmailsFromString,
+  extractURLfromString,
+} from '@/lib/utils';
 import { onRealTimeChat } from '../conversation';
 import { clerkClient } from '@clerk/nextjs';
 import { onMailer } from '../mailer';
@@ -159,6 +163,7 @@ export const onAiChatBotAssistant = async (
       },
       select: {
         name: true,
+        assistant: true,
         filterQuestions: {
           where: {
             answered: null,
@@ -169,6 +174,7 @@ export const onAiChatBotAssistant = async (
         },
       },
     });
+
     if (chatBotDomain) {
       const extractedEmail = extractEmailsFromString(message);
       if (extractedEmail) {
@@ -249,7 +255,7 @@ export const onAiChatBotAssistant = async (
         await onStoreConversations(chatRoom.id, message, author);
 
         // OpenAI Assistant API implementation
-        const assistantId = process.env.ASSISTANT_API_KEY;
+        const assistantId = chatBotDomain.assistant;
         let threadId: any;
 
         if (chatRoom?.threadId) {
@@ -306,6 +312,58 @@ export const onAiChatBotAssistant = async (
         let runStatus;
         do {
           runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
+
+          if (
+            runStatus.status === 'requires_action' &&
+            runStatus.required_action
+          ) {
+            const requiredAction =
+              runStatus.required_action.submit_tool_outputs;
+            if (requiredAction && requiredAction.tool_calls.length > 0) {
+              const args = JSON.parse(
+                requiredAction.tool_calls[0].function.arguments
+              );
+              const toolCallId = requiredAction.tool_calls[0].id;
+              const output = await createHubSpotContact(
+                args.firstname,
+                args.lastname,
+                args.phone,
+                args.email
+              );
+
+              // Check if 'output' is defined and handle accordingly
+              if (!output) {
+                await openai.beta.threads.runs.submitToolOutputs(
+                  threadId,
+                  run.id,
+                  {
+                    tool_outputs: [
+                      {
+                        tool_call_id: toolCallId,
+                        output: JSON.stringify({
+                          message: 'An error occurred, please try again.',
+                        }),
+                      },
+                    ],
+                  }
+                );
+              } else {
+                // Proceed to submit the output as before
+                await openai.beta.threads.runs.submitToolOutputs(
+                  threadId,
+                  run.id,
+                  {
+                    tool_outputs: [
+                      {
+                        tool_call_id: toolCallId,
+                        output: JSON.stringify(output),
+                      },
+                    ],
+                  }
+                );
+              }
+            }
+          }
         } while (runStatus.status !== 'completed');
 
         const messages = await openai.beta.threads.messages.list(threadId);

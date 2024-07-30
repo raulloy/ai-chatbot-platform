@@ -31,6 +31,7 @@ model Domain {
   id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   icon String
+  assistant String
 
   chatBot         ChatBot?
   helpdesk        HelpDesk[]
@@ -91,7 +92,7 @@ model CustomerResponses {
 
 model Customer {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String? @unique // Ensure email is unique
+  email String? 
 
   questions CustomerResponses[]
   chatRoom ChatRoom[]

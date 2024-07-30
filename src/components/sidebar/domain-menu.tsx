@@ -1,29 +1,29 @@
-import { useDomain } from '@/hooks/sidebar/use-domain'
-import { cn } from '@/lib/utils'
-import React from 'react'
-import AppDrawer from '../drawer'
-import { Plus } from 'lucide-react'
-import { Loader } from '../loader'
-import FormGenerator from '../forms/form-generator'
-import UploadButton from '../upload-button'
-import { Button } from '../ui/button'
-import Link from 'next/link'
-import Image from 'next/image'
+import { useDomain } from '@/hooks/sidebar/use-domain';
+import { cn } from '@/lib/utils';
+import React from 'react';
+import AppDrawer from '../drawer';
+import { Plus } from 'lucide-react';
+import { Loader } from '../loader';
+import FormGenerator from '../forms/form-generator';
+import UploadButton from '../upload-button';
+import { Button } from '../ui/button';
+import Link from 'next/link';
+import Image from 'next/image';
 
 type Props = {
-  min?: boolean
+  min?: boolean;
   domains:
     | {
-        id: string
-        name: string
-        icon: string | null
+        id: string;
+        name: string;
+        icon: string | null;
       }[]
     | null
-    | undefined
-}
+    | undefined;
+};
 
 const DomainMenu = ({ domains, min }: Props) => {
-  const { register, onAddDomain, loading, errors, isDomain } = useDomain()
+  const { register, onAddDomain, loading, errors, isDomain } = useDomain();
 
   return (
     <div className={cn('flex flex-col gap-3', min ? 'mt-6' : 'mt-3')}>
@@ -52,15 +52,21 @@ const DomainMenu = ({ domains, min }: Props) => {
                 placeholder="mydomain.com"
                 type="text"
               />
+              <FormGenerator
+                inputType="input"
+                register={register}
+                label="Assistant"
+                name="assistant"
+                errors={errors}
+                placeholder="Assistant ID"
+                type="text"
+              />
               <UploadButton
                 register={register}
                 label="Upload Icon"
                 errors={errors}
               />
-              <Button
-                type="submit"
-                className="w-full"
-              >
+              <Button type="submit" className="w-full">
                 Add Domain
               </Button>
             </form>
@@ -90,7 +96,7 @@ const DomainMenu = ({ domains, min }: Props) => {
           ))}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default DomainMenu
+export default DomainMenu;

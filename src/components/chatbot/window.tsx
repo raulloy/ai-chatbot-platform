@@ -94,7 +94,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
         className={`flex flex-col bg-white rounded-xl border-[1px] overflow-hidden mr-[40px] ${
           deviceType === 'mobile'
             ? 'h-[600px] w-[320px]'
-            : 'h-[670px] w-[450px]'
+            : 'h-[600px] w-[450px]'
         }`}
       >
         <div className="flex justify-between px-4 pt-4">
@@ -110,7 +110,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
               <h3 className="text-lg font-bold leading-none mb-2">
                 Asistente Virtual
               </h3>
-              {/* <p className="text-sm">{domainName.split('.com')[0]}</p> */}
+              <p className="text-sm">{domainName}</p>
               {realtimeMode?.mode && (
                 <RealTimeMode
                   setChats={setChat}
@@ -133,7 +133,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
                   color: textColor || '',
                 }}
                 className={`px-3 flex sm:h-[330px] flex-col py-5 gap-3 chat-window overflow-y-auto ${
-                  deviceType === 'mobile' ? 'h-[330px]' : 'h-[400px]'
+                  deviceType === 'mobile' ? 'h-[330px]' : 'h-[370px]'
                 }`}
                 ref={chatContainerRef}
               >

@@ -21,7 +21,7 @@ const ConversationSearch = ({ register, domains }: Props) => {
         defaultValue=""
       >
         <option value="" disabled>
-          Domain name
+          Chatbot
         </option>
         {domains?.map((domain) => (
           <option value={domain.id} key={domain.id}>
