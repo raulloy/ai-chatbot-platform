@@ -101,7 +101,7 @@ export const BotWindow = forwardRef<HTMLDivElement, Props>(
           <div className="flex gap-2">
             <Avatar className="w-20 h-20">
               <AvatarImage
-                src="https://media.licdn.com/dms/image/C560BAQG2uZESDccJ-Q/company-logo_200_200/0/1630657161690/hogares_union_hu_logo?e=2147483647&v=beta&t=3wpvZFwRqYi06LWNPiyJvH0oOD-WNdn4swQpYLYTQyg"
+                src="https://cdn-icons-png.flaticon.com/128/18/18188.png"
                 alt="@shadcn"
               />
               <AvatarFallback>HU</AvatarFallback>

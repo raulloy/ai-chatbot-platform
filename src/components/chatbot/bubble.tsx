@@ -95,7 +95,7 @@ const Bubble = ({ message, createdAt }: Props) => {
       {message.role == 'assistant' ? (
         <Avatar className="w-5 h-5">
           <AvatarImage
-            src="https://media.licdn.com/dms/image/C560BAQG2uZESDccJ-Q/company-logo_200_200/0/1630657161690/hogares_union_hu_logo?e=2147483647&v=beta&t=3wpvZFwRqYi06LWNPiyJvH0oOD-WNdn4swQpYLYTQyg"
+            src="https://cdn-icons-png.flaticon.com/128/16402/16402229.png"
             alt="@shadcn"
           />
           <AvatarFallback>HU</AvatarFallback>
