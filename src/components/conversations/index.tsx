@@ -24,10 +24,41 @@ const ConversationMenu = ({ domains }: Props) => {
   const { register, chatRooms, loading, onGetActiveChatMessages } =
     useConversation();
 
+  const filteredChatRooms = chatRooms.filter(
+    (room) => room.chatRoom[0]?.message[0]?.message
+  );
+
   return (
     <div className="py-3 px-0">
       <TabsMenu triggers={TABS_MENU}>
-        <TabsContent value="unread">
+        <TabsContent value="conversations">
+          <ConversationSearch domains={domains} register={register} />
+          <div
+            className="flex flex-col overflow-y-auto"
+            style={{ height: 'calc(100vh - 8rem)' }}
+          >
+            <Loader loading={loading}>
+              {filteredChatRooms.length ? (
+                filteredChatRooms.map((room) => (
+                  <ChatCard
+                    seen={room.chatRoom[0]?.message[0]?.seen}
+                    id={room.chatRoom[0].id}
+                    onChat={() => onGetActiveChatMessages(room.chatRoom[0].id)}
+                    createdAt={room.chatRoom[0].message[0]?.createdAt}
+                    key={room.chatRoom[0].id}
+                    title={room.email!}
+                    description={room.chatRoom[0].message[0]?.message}
+                  />
+                ))
+              ) : (
+                <CardDescription>No chats for your domain</CardDescription>
+              )}
+            </Loader>
+          </div>
+          {/* All */}
+        </TabsContent>
+        <TabsContent value="all">
+          <Separator orientation="horizontal" className="mt-5" />
           <ConversationSearch domains={domains} register={register} />
           <div
             className="flex flex-col overflow-y-auto"
@@ -51,10 +82,6 @@ const ConversationMenu = ({ domains }: Props) => {
               )}
             </Loader>
           </div>
-        </TabsContent>
-        <TabsContent value="all">
-          <Separator orientation="horizontal" className="mt-5" />
-          all
         </TabsContent>
         <TabsContent value="pending">
           <Separator orientation="horizontal" className="mt-5" />

@@ -328,7 +328,8 @@ export const onAiChatBotAssistant = async (
                 args.firstname,
                 args.lastname,
                 args.phone,
-                args.email
+                args.email,
+                args.desarrollo
               );
 
               // Check if 'output' is defined and handle accordingly

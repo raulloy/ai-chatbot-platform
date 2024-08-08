@@ -46,7 +46,8 @@ export const createHubSpotContact = async (
   firstname: string,
   lastname: string,
   phone: string,
-  email: string
+  email: string,
+  desarrollo: string
 ) => {
   const hubspotClient = new Client({
     accessToken: process.env.HUBSPOT_ACCESS_TOKEN,
@@ -57,6 +58,9 @@ export const createHubSpotContact = async (
     lastname,
     phone,
     email,
+    desarrollo,
+    canal_de_captacion_v2: 'Digital Institucional',
+    subcanales_de_captacion: 'BotAI',
   };
 
   try {
